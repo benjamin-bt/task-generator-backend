@@ -26,20 +26,20 @@ export const generateTask = async (req: Request, res: Response): Promise<void> =
 
     const pdfFilePath = "./generated_pdf/generated_task.pdf";
 
-    // Ensure the PDF exists
+    // A PDF fájl ellenőrzése
     if (!fs.existsSync(pdfFilePath)) {
       res.status(500).json({ success: false, message: "A PDF fájl generálása sikertelen volt." });
       return;
     }
 
-    // Send the PDF as a downloadable file
+    // A PDF fájl visszaküldése
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${taskTitle.replace(/\s/g, "_")}.pdf"`);
 
     const pdfStream = fs.createReadStream(pdfFilePath);
     pdfStream.pipe(res);
 
-    // Log task details
+    // A feldolgozás részletes logolása
     console.log("A feladat feldolgozása sikeres volt:", taskResult);
   } catch (error) {
     console.error("Hiba a feladat feldolgozásakor:", error);

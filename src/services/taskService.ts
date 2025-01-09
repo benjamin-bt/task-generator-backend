@@ -11,15 +11,15 @@ export const processTask = async (
   date: Date | null
 ) => {
   try {
-    // Generate the graph
+    // A gráf generálása
     const graph = generateRandomGraph(graphNodes, graphEdges);
 
-    // Generate the PDF
+    // A PDF generálása
     const message = await generatePDF(taskType, taskTitle, taskText, date);
 
-    console.log(message); // Logs the success message
+    console.log(message);
 
-    // Return the task processing result
+    // A feldolgozás eredménye
     return {
       success: true,
       task: {
@@ -34,17 +34,16 @@ export const processTask = async (
       },
     };
   } catch (error) {
-    // Handle the error by narrowing its type
     if (error instanceof Error) {
-      console.error("Error:", error.message); // Safely logs the error message
+      console.error("Hiba:", error.message);
     } else {
-      console.error("Unexpected error:", error); // Handles non-Error objects
+      console.error("Váratlan hiba:", error);
     }
 
-    // Return failure response
+    // Sikeres feldolgozás esetén a visszatérési érték
     return {
       success: false,
-      message: "Task processing failed due to an error.",
+      message: "A feldolgozás sikertelen volt.",
     };
   }
 };

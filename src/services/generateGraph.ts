@@ -42,7 +42,7 @@ export const generateRandomGraph = (graphNodes: number, graphEdges: number): Gra
     const source = Math.floor(Math.random() * graphNodes).toString();
     const target = Math.floor(Math.random() * graphNodes).toString();
 
-    // Prevent loops and check for existing edges
+    // Az él hozzáadása, biztosítva, hogy nem hurokél és nem párhuzamos él
     if (source !== target && !graph.hasEdge(source, target)) {
       graph.addEdge(source, target, {
         color: '#75746f',
