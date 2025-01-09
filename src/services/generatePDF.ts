@@ -103,10 +103,10 @@ export const generatePDF = async (
     const outputPath = "./generated_pdf/generated_task.pdf";
     fs.writeFileSync(outputPath, pdfBytes);
 
-    console.log("PDF successfully created.");
-    return `PDF successfully saved at ${outputPath}`;
+    console.log("PDF fájl létrehozva.");
+    return `PDF elmentve: ${outputPath}`;
   } catch (error) {
-    console.error("Error generating PDF:", error);
-    throw new Error("Failed to generate PDF.");
+    console.error("Hiba a PDF fájl létrehozásakor:", error);
+    throw new Error("Nem sikerült a PDF fájl létrehozása.");
   }
 };
