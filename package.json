@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-  "dev": "ts-node src/server.tsx",
-  "build": "tsc",
-  "start": "node dist/server.js"
+    "dev": "ts-node src/server.tsx",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +16,13 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "graphology": "^0.25.4",
-    "pdf-lib": "^1.17.1"
+    "graphology-generators": "^0.11.2",
+    "graphology-layout": "^0.6.1",
+    "lodash": "^4.17.21",
+    "node-graphviz": "^0.1.1",
+    "pdf-lib": "^1.17.1",
+    "seedrandom": "^3.0.5",
+    "ts-graphviz": "^2.1.5"
   },
   "json.schemas": [],
   "devDependencies": {

@@ -1,38 +1,32 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import bodyParser from "body-parser";
+import generateTaskRoutes from "./routes/dataFromFrontend";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 
-// CORS Middleware Configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow only your frontend URL
-  methods: ['GET', 'POST'], // Specify allowed HTTP methods
-  allowedHeaders: ['Content-Type'] // Specify allowed headers
+  origin: 'http://localhost:3000', // A frontend URL
+  methods: ['GET', 'POST'], // Az engedélyezett HTTP metódusok
+  allowedHeaders: ['Content-Type'] // Az engedélyezett HTTP fejlécek
 }));
 
-// Middleware to parse JSON
+app.use(bodyParser.json());
+
 app.use(express.json());
 
-// Test API endpoint
+app.use(errorHandler);
+
+// API végpont tesztelése
 app.get('/api/message', (req: Request, res: Response) => {
     res.json({ message: 'Hello from the backend!' });
 });
 
-// Start server
+app.use('/api', generateTaskRoutes);
+
+// Szerver indítása
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
-});
-
-app.post('/api/generate-task', (req: Request, res: Response) => {
-    console.log('Kapott adatok:', req.body); // Log received data
-    const { taskType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date } = req.body;
-
-    // Example processing
-    const response = {
-        message: "Feladat sikeresen létrehozva!",
-        receivedData: req.body,
-    };
-
-    res.json(response); // Send response back to frontend
 });
