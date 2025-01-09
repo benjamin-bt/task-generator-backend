@@ -112,4 +112,4 @@ This project is licensed under the the Apache License. See the LICENSE file for 
 
 ## Author
 
-This project is maintained by Benjámin Bartha-Tóth as part of his MA thesis work at ELTE Eötvös Lorán University (Hungary).
+This project is maintained by Benjámin Bartha-Tóth as part of his MA thesis work at ELTE Eötvös Loránd University (Hungary).
