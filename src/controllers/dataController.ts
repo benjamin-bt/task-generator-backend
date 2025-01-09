@@ -1,32 +1,48 @@
 import { Request, Response } from "express";
 import { processTask } from "../services/taskService";
 import { validateTaskInput } from "../utils/validationUtils";
+import * as fs from "fs";
 
-export const generateTask = (req: Request, res: Response): void => {
+export const generateTask = async (req: Request, res: Response): Promise<void> => {
   try {
     const validationError = validateTaskInput(req.body);
     if (validationError) {
-      // If validation fails, send a 400 response with the validation error message
       res.status(400).json({ success: false, message: validationError });
       return;
     }
 
     const { taskType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date } = req.body;
 
-    const taskResult = processTask(
+    // A feladat feldolgozása és a PDF generálása
+    const taskResult = await processTask(
       taskType,
       graphNodes,
       graphEdges,
       taskTitle,
       taskText,
       dateChecked,
-      date
+      date ? new Date(date) : null
     );
 
-    // A feldolgozás eredményének visszaadása
-    res.status(200).json(taskResult);
+    const pdfFilePath = "./generated_pdf/generated_task.pdf";
+
+    // Ensure the PDF exists
+    if (!fs.existsSync(pdfFilePath)) {
+      res.status(500).json({ success: false, message: "A PDF fájl generálása sikertelen volt." });
+      return;
+    }
+
+    // Send the PDF as a downloadable file
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${taskTitle.replace(/\s/g, "_")}.pdf"`);
+
+    const pdfStream = fs.createReadStream(pdfFilePath);
+    pdfStream.pipe(res);
+
+    // Log task details
+    console.log("A feladat feldolgozása sikeres volt:", taskResult);
   } catch (error) {
-    console.error("Error processing task:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Hiba a feladat feldolgozásakor:", error);
+    res.status(500).json({ success: false, message: "Szerverhiba" });
   }
 };

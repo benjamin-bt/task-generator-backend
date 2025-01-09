@@ -1,2 +1,4 @@
 node_modules/
 .env
+generated_pdf/generated_task.pdf
+graph_svg/graph.svg

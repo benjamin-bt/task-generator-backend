@@ -1,35 +1,73 @@
 import Graph from 'graphology';
-const seedrandom = require('seedrandom');
+var render = require('graphology-svg');
+import { circular, rotation } from 'graphology-layout';
 
-// Function to generate a random connected simple graph with seeded randomness
+/**
+ @param graphNodes
+ @param graphEdges
+ @returns
+*/
 export const generateRandomGraph = (graphNodes: number, graphEdges: number): Graph => {
-  const graph = new Graph();
+  if (graphEdges > (graphNodes * (graphNodes - 1)) / 2) {
+    throw new Error('Túl sok az él a gráfban!');
+  }
 
-  // Use a random seed for better randomness
-  const rng = seedrandom(Math.random().toString());
+  const graph = new Graph({ type: 'undirected' }); // A gráf létrehozása
 
-  // Add nodes
+  // A gráf csúcsainak hozzáadása paraméterezve
   for (let i = 0; i < graphNodes; i++) {
-    graph.addNode(i.toString());
+    graph.addNode(i.toString(), {
+      size: 3,
+      color: '#D3D3D3',
+      label: `${i}`,
+    });
   }
 
-  // Step 1: Create a spanning tree (guaranteeing connectivity)
+  // A gráf éleinek hozzáadása paraméterezve (ensuring connectivity)
   for (let i = 1; i < graphNodes; i++) {
-    graph.addEdge((i - 1).toString(), i.toString());
-  }
+    const source = Math.floor(Math.random() * i).toString();
+    const target = i.toString();
 
-  // Step 2: Add random edges using the seeded RNG
-  let edgeCount = graphNodes - 1; // We already have (n-1) edges from the tree
-  while (edgeCount < graphEdges) {
-    const node1 = Math.floor(rng() * graphNodes).toString();
-    const node2 = Math.floor(rng() * graphNodes).toString();
-
-    // Avoid self-loops and duplicate edges
-    if (node1 !== node2 && !graph.hasEdge(node1, node2)) {
-      graph.addEdge(node1, node2);
-      edgeCount++;
+    if (!graph.hasEdge(source, target)) {
+      graph.addEdge(source, target, {
+        color: '#75746f',
+        size: 5,
+      });
     }
   }
+
+  // A többi él hozzáadása véletlenszerűen, de úgy, hogy ne legyenek hurokélek és párhuzamos élek
+  const edges = new Set<string>();
+  while (graph.size < graphEdges) {
+    const source = Math.floor(Math.random() * graphNodes).toString();
+    const target = Math.floor(Math.random() * graphNodes).toString();
+
+    // Prevent loops and check for existing edges
+    if (source !== target && !graph.hasEdge(source, target)) {
+      graph.addEdge(source, target, {
+        color: '#75746f',
+        size: 5,
+      });
+    }
+  }
+
+  // A gráf csúcsainak elrendezése kör alakban
+  circular.assign(graph, { scale: 30 });
+
+  // A gráf elforgatása, hogy a 0 mindig felül legyen
+  rotation.assign(graph, (3 * Math.PI) / 2, { centeredOnZero: true });
+
+  // A gráf kirajzolása SVG formátumban
+  render(
+    graph,
+    './graph_svg/graph.svg',
+    {
+      width: 1000,
+      height: 1000,
+      margin: 120,
+    },
+    () => console.log('SVG fájl létrehozva.')
+  );
 
   console.log(graph);
   return graph;
