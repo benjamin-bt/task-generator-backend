@@ -1,8 +1,12 @@
 import express from "express";
-import { generateTask } from "../controllers/dataController";
+import { generatePdf, generateSvg } from "../controllers/dataController";
 
 const router = express.Router();
 
-router.post('/generate-task', generateTask);
+// Az SVG generálásához szükséges adatokat tartalmazó POST kérés kezelése
+router.post('/generate-svg', generateSvg);
+
+// A PDF generálásához szükséges adatokat tartalmazó POST kérés kezelése
+router.post('/generate-pdf', generatePdf);
 
 export default router;

@@ -1,7 +1,6 @@
-import { generateSvgFile } from "./generateSVG";
 import { generatePdfFile } from "./generatePDF";
 
-export const processTask = async (
+export const processPdfTask = async (
   taskType: string,
   graphNodes: number,
   graphEdges: number,
@@ -12,26 +11,23 @@ export const processTask = async (
   svgFilePath: string
 ) => {
   try {
-    // A gráf generálása
-    const graph = generateSvgFile(graphNodes, graphEdges);
-
-    // A PDF generálása
-    const message = await generatePdfFile(taskType, taskTitle, taskText, date, svgFilePath);
+    // A PDF generálásához szükséges adatok feldolgozása
+    const { message, outputPath } = await generatePdfFile(taskType, taskTitle, taskText, date, svgFilePath);
 
     console.log(message);
 
-    // A feldolgozás eredménye
     return {
       success: true,
       task: {
-        taskType: taskType,
+        taskType: taskType, 
         taskTitle: taskTitle.toUpperCase(),
         taskText: taskText,
         graphNodes: graphNodes,
         graphEdges: graphEdges,
         dateChecked,
         date,
-        graph: graph,
+        svgFilePath: svgFilePath, 
+        filePath: outputPath,
       },
     };
   } catch (error) {
@@ -41,7 +37,6 @@ export const processTask = async (
       console.error("Váratlan hiba:", error);
     }
 
-    // Sikeres feldolgozás esetén a visszatérési érték
     return {
       success: false,
       message: "A feldolgozás sikertelen volt.",

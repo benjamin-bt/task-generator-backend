@@ -7,5 +7,5 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   console.error(err.stack);
-  res.status(500).json({ success: false, message: err.message || "Server Error" });
+  res.status(500).json({ success: false, message: err.message || "Szerver oldali hiba" });
 };
