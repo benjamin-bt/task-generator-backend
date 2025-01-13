@@ -1,9 +1,12 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import * as fs from "fs";
-import * as fsp from "fs/promises";
-import sharp from "sharp";
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import sharp from 'sharp';
+import fs from 'fs';
+import fsp from 'fs/promises';
+import path from 'path';
 
-const waitForFile = async (filePath: string): Promise<void> => {
+const PDF_DIRECTORY =  path.join(__dirname, "../../generated_pdf");
+
+const waitForFile = async (filePath: string) => {
   while (true) {
     try {
       await fsp.access(filePath);
@@ -92,13 +95,13 @@ export const generatePdfFile = async (
     });
 
     const pdfBytes = await pdfDoc.save();
-    const outputPath = "./generated_pdf/generated_task.pdf";
-    fs.writeFileSync(outputPath, pdfBytes);
+    const pdfFilename = path.basename(svgFilePath).replace('.svg', '.pdf');
+    const outputPath = path.join(PDF_DIRECTORY, pdfFilename);
+    await fsp.writeFile(outputPath, pdfBytes);
 
-    console.log("PDF fájl létrehozva.");
-    return { message: `PDF elmentve: ${outputPath}`, outputPath };
+    return { message: 'PDF generálása sikeres', outputPath };
   } catch (error) {
-    console.error("Hiba a PDF fájl létrehozásakor:", error);
-    throw new Error("Nem sikerült a PDF fájl létrehozása.");
+    console.error('Hiba a PDF generálása közben:', error);
+    throw new Error('Nem sikerült a PDF generálása');
   }
 };

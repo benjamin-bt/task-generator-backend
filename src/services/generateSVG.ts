@@ -1,7 +1,7 @@
 import Graph from 'graphology';
 import * as path from "path";
 var render = require('graphology-svg');
-import { circular, rotation } from 'graphology-layout';
+import { circular, rotation, random } from 'graphology-layout';
 
 /**
  * @param taskTitle
@@ -32,7 +32,7 @@ export const generateSvgFile = async (graphNodes: number, graphEdges: number): P
 
     if (!graph.hasEdge(source, target)) {
       graph.addEdge(source, target, {
-        color: '#75746f',
+        color: '#4d4d4d',
         size: 5,
       });
     }
@@ -46,7 +46,7 @@ export const generateSvgFile = async (graphNodes: number, graphEdges: number): P
 
     if (source !== target && !graph.hasEdge(source, target)) {
       graph.addEdge(source, target, {
-        color: '#75746f',
+        color: '#4d4d4d',
         size: 5,
       });
     }
@@ -59,7 +59,7 @@ export const generateSvgFile = async (graphNodes: number, graphEdges: number): P
   rotation.assign(graph, (3 * Math.PI) / 2, { centeredOnZero: true });
 
   const timestamp = new Date().toISOString().replace(/[:.-]/g, ''); // Időbélyeg a fájl nevében
-  const filePath = `./generated_svg/${timestamp}_graph.svg`; // A fájl elérési útja
+  const filePath = `./generated_svg/${timestamp}.svg`; // A fájl elérési útja
 
   // A gráf SVG fájlba való renderelése
   render(

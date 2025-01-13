@@ -7,26 +7,52 @@ import * as path from "path";
 
 const MAX_SVG_FILES = 10;
 const SVG_DIRECTORY = path.join(__dirname, "../../generated_svg");
+const PDF_DIRECTORY = path.join(__dirname, "../../generated_pdf");
 
 let svgFilePath: string | undefined;
 
 const getSvgFiles = (): string[] => {
-  return fs.readdirSync(SVG_DIRECTORY)
-    .filter(file => file.endsWith(".svg"))
-    .map(file => path.join(SVG_DIRECTORY, file));
+  return fs
+    .readdirSync(SVG_DIRECTORY)
+    .filter((file) => file.endsWith(".svg"))
+    .map((file) => path.join(SVG_DIRECTORY, file));
 };
 
 const manageSvgFiles = () => {
   const svgFiles = getSvgFiles();
   console.log(`${svgFiles.length} db SVG fájl van.`);
   if (svgFiles.length > MAX_SVG_FILES) {
-    const filesToDelete = svgFiles.sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs).slice(0, svgFiles.length - MAX_SVG_FILES);
+    const filesToDelete = svgFiles
+      .sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
+      .slice(0, svgFiles.length - MAX_SVG_FILES);
     console.log(`${filesToDelete.length} db SVG fájl törlése:`, filesToDelete);
-    filesToDelete.forEach(file => fs.unlinkSync(file));
+    filesToDelete.forEach((file) => fs.unlinkSync(file));
   }
 };
 
-export const generateSvg = async (req: Request, res: Response): Promise<void> => {
+const getPdfFiles = (): string[] => {
+  return fs
+    .readdirSync(PDF_DIRECTORY)
+    .filter((file) => file.endsWith(".pdf"))
+    .map((file) => path.join(PDF_DIRECTORY, file));
+};
+
+const managePdfFiles = () => {
+  const pdfFiles = getPdfFiles();
+  console.log(`${pdfFiles.length} db PDF fájl van.`);
+  if (pdfFiles.length > MAX_SVG_FILES) {
+    const filesToDelete = pdfFiles
+      .sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
+      .slice(0, pdfFiles.length - MAX_SVG_FILES);
+    console.log(`${filesToDelete.length} db PDF fájl törlése:`, filesToDelete);
+    filesToDelete.forEach((file) => fs.unlinkSync(file));
+  }
+};
+
+export const generateSvg = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const validationError = validateSvgInput(req.body);
     if (validationError) {
@@ -39,17 +65,25 @@ export const generateSvg = async (req: Request, res: Response): Promise<void> =>
     const svgResult = await processSvgTask(graphNodes, graphEdges);
 
     if (svgResult.success && svgResult.task) {
-      svgFilePath = svgResult.task.svgFilePath;
+      const svgFilePath = svgResult.task.svgFilePath;
       manageSvgFiles();
 
+      const filename = path.basename(svgFilePath);
       res.setHeader("Content-Type", "image/svg+xml");
-      res.setHeader("Content-Disposition", `attachment; filename="graph.svg"`);
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${filename}"`
+      );
+      res.setHeader("X-Filename", filename);
+      res.setHeader("Access-Control-Expose-Headers", "X-Filename");
       const svgStream = fs.createReadStream(svgFilePath);
       svgStream.pipe(res);
 
-      console.log("SVG fájl legenerálva:", svgResult);
+      console.log("SVG fájl legenerálva:", svgResult, filename);
     } else {
-      res.status(500).json({ success: false, message: "Hiba az SVG fájl generálásakor" });
+      res
+        .status(500)
+        .json({ success: false, message: "Hiba az SVG fájl generálásakor" });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Szerver oldali hiba" });
@@ -65,10 +99,20 @@ export const generatePdf = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    const { taskType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date } = req.body;
+    const { taskType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date, svgFilename } = req.body;
 
-    if (!svgFilePath) {
-      res.status(400).json({ success: false, message: "Hiányzik az SVG fájl." });
+    managePdfFiles();
+
+    if (!svgFilename) {
+      res.status(400).json({ success: false, message: "Hiányzik az SVG fájl neve." });
+      return;
+    }
+
+    const svgFilePath = path.join(SVG_DIRECTORY, svgFilename);
+    console.log("SVG fájl elérési út:", svgFilePath);
+
+    if (!fs.existsSync(svgFilePath)) {
+      res.status(400).json({ success: false, message: "Az SVG fájl nem létezik." });
       return;
     }
 
@@ -84,7 +128,9 @@ export const generatePdf = async (req: Request, res: Response): Promise<void> =>
       svgFilePath
     );
 
-    const pdfFilePath = "./generated_pdf/generated_task.pdf";
+    const pdfFilename = svgFilename.replace('.svg', '.pdf');
+    const pdfFilePath = path.join(PDF_DIRECTORY, pdfFilename);
+    console.log("PDF fájl elérési út:", pdfFilePath);
 
     if (!fs.existsSync(pdfFilePath)) {
       res.status(500).json({ success: false, message: "Nem sikerült a PDF generálása." });
@@ -92,14 +138,12 @@ export const generatePdf = async (req: Request, res: Response): Promise<void> =>
     }
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="${taskTitle.replace(/\s/g, "_")}.pdf"`);
+    res.setHeader("Content-Disposition", `attachment; filename="${pdfFilename}"`);
 
     const pdfStream = fs.createReadStream(pdfFilePath);
     pdfStream.pipe(res);
-
-    console.log("PDF fájl létrehozva:", pdfResult);
   } catch (error) {
-    console.error("Hiba az adatok feldolgozásakor:", error);
+    console.error("Szerver oldali hiba:", error);
     res.status(500).json({ success: false, message: "Szerver oldali hiba" });
   }
 };
