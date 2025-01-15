@@ -15,11 +15,6 @@ export const processTask = async (
     // A gráf generálása
     const graph = generateSvgFile(graphNodes, graphEdges);
 
-    // A PDF generálása
-    const message = await generatePdfFile(taskType, taskTitle, taskText, date, svgFilePath);
-
-    console.log(message);
-
     // A feldolgozás eredménye
     return {
       success: true,

@@ -73,6 +73,6 @@ export const generateSvgFile = async (graphNodes: number, graphEdges: number): P
     () => console.log('SVG fájl létrehozva.')
   );
 
-  console.log(graph);
+  /* console.log(graph); */
   return { filePath };
 };

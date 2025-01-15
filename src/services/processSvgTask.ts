@@ -8,7 +8,7 @@ export const processSvgTask = async (
 
     const result = await generateSvgFile(graphNodes, graphEdges);
 
-    console.log(result);
+    /* console.log(result); */
 
     return {
       success: true,

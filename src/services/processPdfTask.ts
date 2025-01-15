@@ -14,7 +14,7 @@ export const processPdfTask = async (
     // A PDF generálásához szükséges adatok feldolgozása
     const { message, outputPath } = await generatePdfFile(taskType, taskTitle, taskText, date, svgFilePath);
 
-    console.log(message);
+    /* console.log(message); */
 
     return {
       success: true,
