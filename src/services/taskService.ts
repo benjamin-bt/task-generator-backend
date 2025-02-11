@@ -3,6 +3,7 @@ import { generatePdfFile } from "./generatePDF";
 
 export const processTask = async (
   taskType: string,
+  graphType: string,
   graphNodes: number,
   graphEdges: number,
   taskTitle: string,
@@ -13,7 +14,7 @@ export const processTask = async (
 ) => {
   try {
     // A gráf generálása
-    const graph = generateSvgFile(graphNodes, graphEdges);
+    const graph = generateSvgFile(taskType, graphType, graphNodes, graphEdges);
 
     // A feldolgozás eredménye
     return {

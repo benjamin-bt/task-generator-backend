@@ -1,78 +1,107 @@
-import Graph from 'graphology';
+import Graph from "graphology";
 import * as path from "path";
-var render = require('graphology-svg');
-import { circular, rotation, random } from 'graphology-layout';
+var render = require("graphology-svg");
+import { circular, rotation } from "graphology-layout";
+import { bfsFromNode, dfsFromNode } from "graphology-traversal";
+import { topologicalSort, hasCycle, willCreateCycle } from "graphology-dag";
+import * as fs from "fs";
 
-/**
- * @param taskTitle
- * @param graphNodes
- * @param graphEdges
- * @returns
- */
-export const generateSvgFile = async (graphNodes: number, graphEdges: number): Promise<{ filePath: string }> => {
+export const generateSvgFile = async (
+  taskType: string,
+  graphType: string,
+  graphNodes: number,
+  graphEdges: number
+): Promise<{ filePath: string; nodeList: string[] }> => {
   if (graphEdges > (graphNodes * (graphNodes - 1)) / 2) {
-    throw new Error('Túl sok az él a gráfban!');
+    throw new Error("Túl sok az él a gráfban!");
   }
 
-  const graph = new Graph({ type: 'undirected' });
+  const isDirected = graphType === "irányított";
+  const isDAG = isDirected && taskType === "topologikus rendezés";
+  const graph = new Graph({
+    type: isDirected ? "directed" : "undirected",
+    allowSelfLoops: isDAG ? false : true,
+  });
+  const bfsNodeList: string[] = [];
+  const dfsNodeList: string[] = [];
+  let nodeList: string[] = [];
 
-  // Csúcsok hozzáadása a gráfhoz
   for (let i = 0; i < graphNodes; i++) {
     graph.addNode(i.toString(), {
       size: 3,
-      color: '#D3D3D3',
+      color: "#D3D3D3",
       label: `${i}`,
     });
   }
 
-  // Élek hozzáadása a gráfhoz, hogy összefüggő legyen
   for (let i = 1; i < graphNodes; i++) {
     const source = Math.floor(Math.random() * i).toString();
     const target = i.toString();
-
     if (!graph.hasEdge(source, target)) {
-      graph.addEdge(source, target, {
-        color: '#4d4d4d',
-        size: 5,
-      });
+      graph.addEdge(source, target, { color: "#4d4d4d", size: 5 });
     }
   }
 
-  // A gráf maradék éleinek hozzáadása véletlenszerűen
-  const edges = new Set<string>();
   while (graph.size < graphEdges) {
-    const source = Math.floor(Math.random() * graphNodes).toString();
-    const target = Math.floor(Math.random() * graphNodes).toString();
+    let source: number, target: number;
+    let sourceStr: string, targetStr: string;
 
-    if (source !== target && !graph.hasEdge(source, target)) {
-      graph.addEdge(source, target, {
-        color: '#4d4d4d',
-        size: 5,
-      });
+    if (isDAG) {
+      do {
+        source = Math.floor(Math.random() * graphNodes);
+        target = Math.floor(Math.random() * graphNodes);
+        sourceStr = source.toString();
+        targetStr = target.toString();
+      } while (
+        graph.hasEdge(sourceStr, targetStr) ||
+        willCreateCycle(graph, sourceStr, targetStr)
+      );
+    } else {
+      do {
+        source = Math.floor(Math.random() * graphNodes);
+        target = Math.floor(Math.random() * graphNodes);
+        sourceStr = source.toString();
+        targetStr = target.toString();
+      } while (
+        source === target ||
+        graph.hasEdge(sourceStr, targetStr)
+      );
     }
+
+    graph.addEdge(sourceStr, targetStr, { color: "#4d4d4d", size: 5 });
   }
 
-  // A gráf elrendezése kör alakban, a rendezettség érdekében
   circular.assign(graph, { scale: 30 });
-
-  // A gráf elforgatása, hogy a 0 csúcs mindig felül legyen
   rotation.assign(graph, (3 * Math.PI) / 2, { centeredOnZero: true });
 
-  const timestamp = new Date().toISOString().replace(/[:.-]/g, ''); // Időbélyeg a fájl nevében
-  const filePath = `./generated_svg/${timestamp}.svg`; // A fájl elérési útja
+  const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
+  const filePath = `./generated_svg/${timestamp}.svg`;
 
-  // A gráf SVG fájlba való renderelése
-  render(
-    graph,
-    filePath,
-    {
-      width: 1000,
-      height: 1000,
-      margin: 120,
-    },
-    () => console.log('SVG fájl létrehozva.')
-  );
+  await new Promise<void>((resolve, reject) => {
+    render(
+      graph,
+      filePath,
+      { width: 1000, height: 1000, margin: 120 },
+      (err: Error) => {
+        if (err) reject(err);
+        else resolve();
+      }
+    );
+  });
 
-  /* console.log(graph); */
-  return { filePath };
+  if (taskType === "mélységi bejárás") {
+    dfsFromNode(graph, "0", (node) => {
+      dfsNodeList.push(node);
+    });
+    nodeList = dfsNodeList;
+  } else if (taskType === "szélességi bejárás") {
+    bfsFromNode(graph, "0", (node) => {
+      bfsNodeList.push(node);
+    });
+    nodeList = bfsNodeList;
+  } else if (isDAG) {
+    nodeList = topologicalSort(graph);
+  }
+
+  return { filePath, nodeList };
 };

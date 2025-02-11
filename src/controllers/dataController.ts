@@ -49,6 +49,7 @@ const managePdfFiles = () => {
   }
 };
 
+// SVG generálása
 export const generateSvg = async (
   req: Request,
   res: Response
@@ -60,12 +61,14 @@ export const generateSvg = async (
       return;
     }
 
-    const { graphNodes, graphEdges } = req.body;
+    const { taskType, graphType, graphNodes, graphEdges } = req.body;
 
-    const svgResult = await processSvgTask(graphNodes, graphEdges);
+    const svgResult = await processSvgTask(taskType, graphType, graphNodes, graphEdges);
+
+    /* console.log("SVG fájl generálás eredménye:", svgResult); */
 
     if (svgResult.success && svgResult.task) {
-      const svgFilePath = svgResult.task.svgFilePath;
+      const { svgFilePath, nodeList } = svgResult.task;
       manageSvgFiles();
 
       const filename = path.basename(svgFilePath);
@@ -75,9 +78,9 @@ export const generateSvg = async (
         `attachment; filename="${filename}"`
       );
       res.setHeader("X-Filename", filename);
-      res.setHeader("Access-Control-Expose-Headers", "X-Filename");
-      const svgStream = fs.createReadStream(svgFilePath);
-      svgStream.pipe(res);
+      res.setHeader("X-Node-List", JSON.stringify(nodeList));
+      res.setHeader("Access-Control-Expose-Headers", "X-Filename, X-Node-List");
+      res.status(200).sendFile(path.resolve(svgFilePath));
 
       /* console.log("SVG fájl legenerálva:", svgResult, filename); */
     } else {
@@ -99,7 +102,7 @@ export const generatePdf = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    const { taskType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date, svgFilename } = req.body;
+    const { taskType, graphType, graphNodes, graphEdges, taskTitle, taskText, dateChecked, date, svgFilename } = req.body;
 
     managePdfFiles();
 
@@ -118,7 +121,8 @@ export const generatePdf = async (req: Request, res: Response): Promise<void> =>
 
     // Az adatok feldolgozása a PDF generálásához
     const pdfResult = await processPdfTask(
-      taskType,
+      taskType,/* 
+      graphType, */
       graphNodes,
       graphEdges,
       taskTitle,

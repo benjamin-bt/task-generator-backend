@@ -1,12 +1,14 @@
 import { generateSvgFile }  from "./generateSVG"
 
 export const processSvgTask = async (
+  taskType: string,
+  graphType: string,
   graphNodes: number,
   graphEdges: number,
 ) => {
   try {
 
-    const result = await generateSvgFile(graphNodes, graphEdges);
+    const result = await generateSvgFile(taskType, graphType, graphNodes, graphEdges);
 
     /* console.log(result); */
 
@@ -17,6 +19,7 @@ export const processSvgTask = async (
         graphEdges: graphEdges,
         result,
         svgFilePath: result.filePath,
+        nodeList: result.nodeList,
       },
     };
   } catch (error) {
