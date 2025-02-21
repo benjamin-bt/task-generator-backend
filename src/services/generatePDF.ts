@@ -78,20 +78,20 @@ export const generatePdfFile = async (
       color: rgb(0, 0, 0),
     });
 
+    page.drawImage(graphImage, {
+          x: imageX,
+          y: 400,
+          width: graphDims.width,
+          height: graphDims.height,
+        });
+
     page.drawText(`${taskText}`, {
       x: 50,
-      y: 700,
+      y: 700-graphDims.height,
       font,
       size: 12,
       color: rgb(0, 0, 0),
       maxWidth: 500,
-    });
-
-    page.drawImage(graphImage, {
-      x: imageX,
-      y: 375,
-      width: graphDims.width,
-      height: graphDims.height,
     });
 
     const pdfBytes = await pdfDoc.save();

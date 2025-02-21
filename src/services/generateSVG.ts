@@ -10,14 +10,15 @@ export const generateSvgFile = async (
   taskType: string,
   graphType: string,
   graphNodes: number,
-  graphEdges: number
+  graphEdges: number,
+  acyclicGraph: boolean
 ): Promise<{ filePath: string; nodeList: string[] }> => {
   if (graphEdges > (graphNodes * (graphNodes - 1)) / 2) {
     throw new Error("Túl sok az él a gráfban!");
   }
 
   const isDirected = graphType === "irányított";
-  const isDAG = isDirected && taskType === "topologikus rendezés";
+  const isDAG = isDirected && acyclicGraph;
   const graph = new Graph({
     type: isDirected ? "directed" : "undirected",
     allowSelfLoops: isDAG ? false : true,
@@ -38,7 +39,7 @@ export const generateSvgFile = async (
     const source = Math.floor(Math.random() * i).toString();
     const target = i.toString();
     if (!graph.hasEdge(source, target)) {
-      graph.addEdge(source, target, { color: "#4d4d4d", size: 5 });
+      graph.addEdge(source, target, { color: "#999797", size: 5 });
     }
   }
 
@@ -68,7 +69,7 @@ export const generateSvgFile = async (
       );
     }
 
-    graph.addEdge(sourceStr, targetStr, { color: "#4d4d4d", size: 5 });
+    graph.addEdge(sourceStr, targetStr, { color: "#999797", size: 5 });
   }
 
   circular.assign(graph, { scale: 30 });

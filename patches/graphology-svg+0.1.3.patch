@@ -1,0 +1,72 @@
+diff --git a/node_modules/graphology-svg/components/edges/line.js b/node_modules/graphology-svg/components/edges/line.js
+index 0f774d0..a560d5e 100644
+--- a/node_modules/graphology-svg/components/edges/line.js
++++ b/node_modules/graphology-svg/components/edges/line.js
+@@ -1,9 +1,3 @@
+-/**
+- * Graphology SVG Edge Line Component
+- * ==================================
+- *
+- * Rendering nodes as plain lines.
+- */
+ module.exports = function drawEdge(settings, data, sourceData, targetData) {
+   return (
+     '<line x1="' +
+diff --git a/node_modules/graphology-svg/renderer.js b/node_modules/graphology-svg/renderer.js
+index 9099839..e9b90b0 100644
+--- a/node_modules/graphology-svg/renderer.js
++++ b/node_modules/graphology-svg/renderer.js
+@@ -1,9 +1,3 @@
+-/**
+- * Graphology SVG Renderer
+- * =======================
+- *
+- * Function rendering the given graph.
+- */
+ var isGraph = require('graphology-utils/is-graph');
+ var helpers = require('./helpers.js');
+ var defaults = require('./defaults.js');
+@@ -38,6 +32,35 @@ function renderer(graph, settings) {
+ 
+     attr = defaults.DEFAULT_EDGE_REDUCER(settings, edge, attr);
+ 
++    var sourceNode = nodeData[source];
++    var targetNode = nodeData[target];
++
++    if (graph.type === 'directed') {
++      var dx = targetNode.x - sourceNode.x;
++      var dy = targetNode.y - sourceNode.y;
++      var length = Math.sqrt(dx * dx + dy * dy);
++      var unitDx = dx / length;
++      var unitDy = dy / length;
++
++      var arrowSize = 35;
++      var arrowWidth = 15;
++
++      var arrowTipX = targetNode.x - unitDx * targetNode.size;
++      var arrowTipY = targetNode.y - unitDy * targetNode.size;
++
++      var arrowPoints = [
++        { x: arrowTipX, y: arrowTipY },
++        { x: arrowTipX - arrowSize * unitDx + arrowWidth * unitDy, y: arrowTipY - arrowSize * unitDy - arrowWidth * unitDx },
++        { x: arrowTipX - arrowSize * unitDx - arrowWidth * unitDy, y: arrowTipY - arrowSize * unitDy + arrowWidth * unitDx }
++      ];
++
++      edgesStrings.push(
++        '<polygon points="' +
++        arrowPoints.map(p => `${p.x},${p.y}`).join(' ') +
++        '" fill="#999797" />'
++      );
++    }
++
+     edgesStrings.push(
+       components.edges[attr.type](
+         settings,
+@@ -49,7 +72,6 @@ function renderer(graph, settings) {
+   });
+ 
+   // Drawing nodes and labels
+-  // TODO: should we draw in size order to avoid weird overlaps? Should we run noverlap?
+   var nodesStrings = [];
+   var nodeLabelsStrings = [];
+   var k;

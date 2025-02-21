@@ -6,6 +6,7 @@ export const processTask = async (
   graphType: string,
   graphNodes: number,
   graphEdges: number,
+  acyclicGraph: boolean,
   taskTitle: string,
   taskText: string,
   dateChecked: boolean,
@@ -14,7 +15,7 @@ export const processTask = async (
 ) => {
   try {
     // A gráf generálása
-    const graph = generateSvgFile(taskType, graphType, graphNodes, graphEdges);
+    const graph = generateSvgFile(taskType, graphType, graphNodes, graphEdges, acyclicGraph);
 
     // A feldolgozás eredménye
     return {

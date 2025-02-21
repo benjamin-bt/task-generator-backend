@@ -61,9 +61,11 @@ export const generateSvg = async (
       return;
     }
 
-    const { taskType, graphType, graphNodes, graphEdges } = req.body;
+    const { taskType, graphType, graphNodes, graphEdges, acyclicGraph } = req.body;
 
-    const svgResult = await processSvgTask(taskType, graphType, graphNodes, graphEdges);
+    console.log(req.body);
+
+    const svgResult = await processSvgTask(taskType, graphType, graphNodes, graphEdges, acyclicGraph);
 
     /* console.log("SVG fájl generálás eredménye:", svgResult); */
 

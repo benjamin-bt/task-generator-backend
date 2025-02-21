@@ -5,10 +5,11 @@ export const processSvgTask = async (
   graphType: string,
   graphNodes: number,
   graphEdges: number,
+  acyclicGraph: boolean
 ) => {
   try {
 
-    const result = await generateSvgFile(taskType, graphType, graphNodes, graphEdges);
+    const result = await generateSvgFile(taskType, graphType, graphNodes, graphEdges, acyclicGraph);
 
     /* console.log(result); */
 
