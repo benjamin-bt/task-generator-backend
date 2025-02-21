@@ -1,11 +1,11 @@
 {
   "name": "task-generator-backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.tsx",
   "scripts": {
     "dev": "ts-node src/server.tsx",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.tsx"
   },
   "keywords": [],
   "author": "",
