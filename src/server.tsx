@@ -7,8 +7,8 @@ import { errorHandler } from "./middleware/errorHandler";
 const app = express();
 
 app.use(cors({
-  /* origin: 'http://localhost:3000', */ 
-  origin: 'https://graph-task-generator.app', // A frontend URL
+  origin: 'http://localhost:3000',
+  /* origin: 'https://graph-task-generator.app', */ // A frontend URL
   methods: ['GET', 'POST'], // Az engedélyezett HTTP metódusok
   allowedHeaders: ['Content-Type'] // Az engedélyezett HTTP fejlécek
 }));
@@ -29,6 +29,5 @@ app.use('/api', generateTaskRoutes);
 // Szerver indítása
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-    /* console.log(`Server running at http://localhost:${PORT}`); */
     console.log(`Server running!`);
 });
