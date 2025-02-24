@@ -13,7 +13,7 @@ index 0f774d0..a560d5e 100644
    return (
      '<line x1="' +
 diff --git a/node_modules/graphology-svg/renderer.js b/node_modules/graphology-svg/renderer.js
-index 9099839..e9b90b0 100644
+index 9099839..4974fd4 100644
 --- a/node_modules/graphology-svg/renderer.js
 +++ b/node_modules/graphology-svg/renderer.js
 @@ -1,9 +1,3 @@
@@ -40,8 +40,8 @@ index 9099839..e9b90b0 100644
 +      var unitDx = dx / length;
 +      var unitDy = dy / length;
 +
-+      var arrowSize = 35;
-+      var arrowWidth = 15;
++      var arrowSize = targetNode.size;
++      var arrowWidth = arrowSize / 2;
 +
 +      var arrowTipX = targetNode.x - unitDx * targetNode.size;
 +      var arrowTipY = targetNode.y - unitDy * targetNode.size;
@@ -55,7 +55,7 @@ index 9099839..e9b90b0 100644
 +      edgesStrings.push(
 +        '<polygon points="' +
 +        arrowPoints.map(p => `${p.x},${p.y}`).join(' ') +
-+        '" fill="#999797" />'
++        `" fill="${attr.color}" />`
 +      );
 +    }
 +
