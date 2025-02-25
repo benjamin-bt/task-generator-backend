@@ -1,6 +1,8 @@
 node_modules/
 .env
-generated_pdf/*
-!generated_pdf/
+generated_task_pdf/*
+!generated_task_pdf/
+generated_solution_pdf/*
+!generated_solution_pdf/
 generated_svg/*
 !generated_svg/

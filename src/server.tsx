@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import path from 'path';
 import bodyParser from "body-parser";
 import generateTaskRoutes from "./routes/dataFromFrontend";
 import { errorHandler } from "./middleware/errorHandler";
@@ -18,6 +19,10 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 app.use(errorHandler);
+
+app.use('/generated_task_pdf', express.static(path.join(__dirname, '../generated_task_pdf')));
+app.use('/generated_solution_pdf', express.static(path.join(__dirname, '../generated_solution_pdf')));
+app.use('/generated_svg', express.static(path.join(__dirname, '../generated_svg')));
 
 // API végpont tesztelése
 app.get('/api/message', (req: Request, res: Response) => {

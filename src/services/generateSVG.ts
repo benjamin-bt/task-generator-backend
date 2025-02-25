@@ -1,10 +1,8 @@
 import Graph from "graphology";
-import * as path from "path";
-var render = require("graphology-svg");
+var render = require("graphology-svg-enhanced");
 import { circular, rotation } from "graphology-layout";
 import { bfsFromNode, dfsFromNode } from "graphology-traversal";
 import { topologicalSort, hasCycle, willCreateCycle } from "graphology-dag";
-import * as fs from "fs";
 
 export const generateSvgFile = async (
   taskType: string,

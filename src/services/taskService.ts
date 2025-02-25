@@ -1,5 +1,4 @@
-import { generateSvgFile } from "./generateSVG";
-import { generatePdfFile } from "./generatePDF";
+/* import { generateSvgFile } from "./generateSVG";
 
 export const processTask = async (
   taskType: string,
@@ -45,3 +44,4 @@ export const processTask = async (
     };
   }
 };
+ */
