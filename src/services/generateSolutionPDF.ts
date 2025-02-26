@@ -1,10 +1,12 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import sharp from 'sharp';
-import fs from 'fs';
-import fsp from 'fs/promises';
-import path from 'path';
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import sharp from "sharp";
+import fsp from "fs/promises";
+import path from "path";
 
-const PDF_DIRECTORY =  path.join(__dirname, "../../generated_pdf");
+const PDF_SOLUTION_DIRECTORY = path.join(
+  __dirname,
+  "../../generated_solution_pdf"
+);
 
 const waitForFile = async (filePath: string) => {
   while (true) {
@@ -19,8 +21,10 @@ const waitForFile = async (filePath: string) => {
 
 sharp.cache(false);
 
-export const generatePdfFile = async (
+export const generateSolutionPdfFile = async (
   taskType: string,
+  graphType: string,
+  nodeListBack: [],
   taskTitle: string,
   taskText: string,
   date: Date | null,
@@ -52,7 +56,11 @@ export const generatePdfFile = async (
     });
 
     const parsedDate = date ? new Date(date) : null;
-    if (parsedDate && parsedDate instanceof Date && !isNaN(parsedDate.getTime())) {
+    if (
+      parsedDate &&
+      parsedDate instanceof Date &&
+      !isNaN(parsedDate.getTime())
+    ) {
       const formattedDate = parsedDate.toLocaleDateString("hu-HU", {
         year: "numeric",
         month: "long",
@@ -70,7 +78,7 @@ export const generatePdfFile = async (
       });
     }
 
-    page.drawText(`${taskTitle}`, {
+    page.drawText(`${taskType}`, {
       x: 50,
       y: 725,
       font,
@@ -79,15 +87,15 @@ export const generatePdfFile = async (
     });
 
     page.drawImage(graphImage, {
-          x: imageX,
-          y: 400,
-          width: graphDims.width,
-          height: graphDims.height,
-        });
+      x: imageX,
+      y: 400,
+      width: graphDims.width,
+      height: graphDims.height,
+    });
 
-    page.drawText(`${taskText}`, {
+    page.drawText(`${nodeListBack}`, {
       x: 50,
-      y: 700-graphDims.height,
+      y: 700 - graphDims.height,
       font,
       size: 12,
       color: rgb(0, 0, 0),
@@ -95,13 +103,15 @@ export const generatePdfFile = async (
     });
 
     const pdfBytes = await pdfDoc.save();
-    const pdfFilename = path.basename(svgFilePath).replace('.svg', '.pdf');
-    const outputPath = path.join(PDF_DIRECTORY, pdfFilename);
+    const pdfFilename = path
+      .basename(svgFilePath)
+      .replace(".svg", "_megoldas.pdf");
+    const outputPath = path.join(PDF_SOLUTION_DIRECTORY, pdfFilename);
     await fsp.writeFile(outputPath, pdfBytes);
 
-    return { message: 'PDF generálása sikeres', outputPath };
+    return { message: "PDF generálása sikeres", outputPath };
   } catch (error) {
-    console.error('Hiba a PDF generálása közben:', error);
-    throw new Error('Nem sikerült a PDF generálása');
+    console.error("Hiba a PDF generálása közben:", error);
+    throw new Error("Nem sikerült a PDF generálása");
   }
 };
