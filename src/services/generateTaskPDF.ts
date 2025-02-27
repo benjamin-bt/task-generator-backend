@@ -77,7 +77,7 @@ export const generateTaskPdfFile = async (
         size: 18,
         color: rgb(0, 0, 0),
       });
-      taskTitleY -= font.heightAtSize(18) + 5; // 5 is the line spacing
+      taskTitleY -= font.heightAtSize(18) + 5;
     });
 
     const imageY = taskTitleY - graphDims.height - 25;
@@ -93,11 +93,6 @@ export const generateTaskPdfFile = async (
     page.drawText(`${taskText}`, {
       x: 50,
       y: taskTextY,
-      font,
-      size: 12,
-      color: rgb(0, 0, 0),
-      maxWidth: 500,
-    });
 
     const parsedDate = date ? new Date(date) : null;
     if (
