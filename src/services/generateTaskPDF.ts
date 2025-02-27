@@ -93,6 +93,10 @@ export const generateTaskPdfFile = async (
     page.drawText(`${taskText}`, {
       x: 50,
       y: taskTextY,
+      font,
+      size: 12,
+      color: rgb(0, 0, 0),
+    });
 
     const parsedDate = date ? new Date(date) : null;
     if (
