@@ -43,13 +43,13 @@ export const generateTaskPdfFile = async (
     const pageWidth = page.getWidth();
     const imageX = (pageWidth - graphDims.width) / 2;
 
-    page.drawText(`${taskType}`, {
+    /* page.drawText(`${taskType}`, {
       x: 25,
       y: 775,
       font,
       size: 10,
       color: rgb(0, 0, 0),
-    });
+    }); */
 
     const parsedDate = date ? new Date(date) : null;
     if (

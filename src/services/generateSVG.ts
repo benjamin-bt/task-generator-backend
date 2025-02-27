@@ -27,7 +27,7 @@ export const generateSvgFile = async (
 
   for (let i = 0; i < graphNodes; i++) {
     graph.addNode(i.toString(), {
-      size: 3,
+      size: 2,
       color: "#D3D3D3",
       label: `${i}`,
     });
