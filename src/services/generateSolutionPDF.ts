@@ -83,8 +83,6 @@ export const generateSolutionPdfFile = async (
       color: rgb(0, 0, 0),
     });
 
-    console.log(date);
-
     // Helyi fejlesztéskor hibás, élőben jó
     const parsedDate = date ? new Date(date) : null;
 
@@ -98,8 +96,6 @@ if (parsedDate && parsedDate instanceof Date && !isNaN(parsedDate.getTime())) {
 
     const textWidth = font.widthOfTextAtSize(formattedDate, 10);
     const xPosition = pageWidth - 25 - textWidth;
-
-    console.log(formattedDate);
 
     page.drawText(`${formattedDate}`, {
         x: xPosition,

@@ -34,8 +34,6 @@ export const processPdfTask = async (
         svgFilePath
       );
 
-    /* console.log(message); */
-
     return {
       success: true,
       task: {

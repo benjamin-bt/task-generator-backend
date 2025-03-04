@@ -80,8 +80,6 @@ export const generateSvg = async (
 
     const svgResult = await processSvgTask(taskType, graphType, graphNodes, graphEdges, acyclicGraph);
 
-    /* console.log("SVG fájl generálás eredménye:", svgResult); */
-
     if (svgResult.success && svgResult.task) {
       const { svgFilePath, nodeList } = svgResult.task;
       manageSvgFiles();

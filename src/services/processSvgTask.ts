@@ -11,8 +11,6 @@ export const processSvgTask = async (
 
     const result = await generateSvgFile(taskType, graphType, graphNodes, graphEdges, acyclicGraph);
 
-    /* console.log(result); */
-
     return {
       success: true,
       task: {
