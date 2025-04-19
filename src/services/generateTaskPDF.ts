@@ -30,6 +30,7 @@ export const generateTaskPdfFile = async (
   try {
     await waitForFile(svgFilePath); // Az SVG fájlra várunk, amíg elkészül
 
+    console.log(date);
     const wrapText = (text: string, maxWidth: number, font: any, fontSize: number) => {
       const words = text.split(' ');
       let lines = [];
@@ -104,8 +105,8 @@ export const generateTaskPdfFile = async (
       parsedDate instanceof Date &&
       !isNaN(parsedDate.getTime())
     ) {
-      parsedDate.setHours(parsedDate.getUTCHours() + 1);
-
+      parsedDate.setHours(parsedDate.getHours() + 2);
+    
       const formattedDate = parsedDate.toLocaleDateString("hu-HU", {
         year: "numeric",
         month: "long",
@@ -113,7 +114,7 @@ export const generateTaskPdfFile = async (
       });
       const textWidth = font.widthOfTextAtSize(formattedDate, 10);
       const xPosition = pageWidth - 25 - textWidth;
-
+    
       page.drawText(`${formattedDate}`, {
         x: xPosition,
         y: 775,

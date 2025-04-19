@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "ts-node src/server.tsx",
     "build": "tsc",
-    "start": "node ./dist/server.js",
-    "postinstall": "patch-package"
+    "start": "node ./dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -34,7 +33,6 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",
-    "patch-package": "^8.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }

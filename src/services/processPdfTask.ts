@@ -14,7 +14,7 @@ export const processPdfTask = async (
   svgFilePath: string
 ) => {
   try {
-    // A PDF generálásához szükséges adatok feldolgozása
+    // A PDF-ek generálásához szükséges adatok feldolgozása
     const { message, outputPath } = await generateTaskPdfFile(
       taskType,
       graphType,
@@ -23,6 +23,7 @@ export const processPdfTask = async (
       date,
       svgFilePath
     );
+
     const { message: message2, outputPath: outputPath2 } =
       await generateSolutionPdfFile(
         taskType,

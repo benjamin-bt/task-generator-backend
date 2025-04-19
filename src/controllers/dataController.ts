@@ -11,7 +11,7 @@ const SVG_DIRECTORY = path.join(__dirname, "../../generated_svg");
 const PDF_TASK_DIRECTORY = path.join(__dirname, "../../generated_task_pdf");
 const PDF_SOLUTION_DIRECTORY = path.join(__dirname, "../../generated_solution_pdf");
 
-let svgFilePath: string | undefined;
+/* let svgFilePath: string | undefined; */
 
 const getSvgFiles = (): string[] => {
   return fs
@@ -105,7 +105,7 @@ export const generateSvg = async (
   }
 };
 
-// PDF generálása
+// PDF-ek generálása
 export const generatePdf = async (req: Request, res: Response): Promise<void> => {
   try {
     const validationError = validatePdfInput(req.body);
