@@ -4,18 +4,16 @@ Ez a projekt egy webalapú alkalmazás, amely gráfelméleti feladatok generál�
 
 ## Fő funkciók
 
-- **Feladatgenerálás**: Testreszabható gráfparaméterekkel rendelkező feladatok generálása.
-- **Gráf létrehozása**: Gráfok generálása és elrendezése a Graphology könyvtár segítségével.
-- **PDF exportálás**: Feladatok és gráfok exportálása PDF formátumban.
-- **Bemeneti validáció**: A bemeneti adatok helyességének ellenőrzése.
-- **Hibakezelés**: Egyedi middleware segítségével történő hibakezelés.
+- **Gráf létrehozása**: Személyreszabható gráfok generálása és elrendezése a Graphology könyvtár segítségével.
+- **Feladatgenerálás**: Testreszabható szövegparaméterekkel rendelkező feladatok generálása.
+- **PDF exportálás**: Feladatok exportálása PDF formátumban.
 
 ## Telepítés és futtatás
 
 1. Klónozd a repót:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/<felhasználónév>/task-generator-backend.git
    ```
 2. Telepítsd a függőségeket:
 
@@ -36,21 +34,6 @@ Hozz létre egy `.env` fájlt a gyökérkönyvtárban, és add meg a következő
 ```
 NEXT_PUBLIC_FRONTEND=<frontend_url>
 ```
-
-## Használat
-
-- Fejlesztői szerver indítása:
-  ```bash
-  npm run dev
-  ```
-- Build készítése:
-  ```bash
-  npm run build
-  ```
-- Szerver indítása:
-  ```bash
-  npm start
-  ```
 
 ### SVG generálása
 
