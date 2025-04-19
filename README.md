@@ -1,115 +1,77 @@
-# Introduction
+# Gráf feladat generátor - backend
 
-This project serves as the backend service for the Graph Task Generator, designed to generate tasks involving graphs and export them as PDF files.
+Ez a projekt egy webalapú alkalmazás, amely gráfelméleti feladatok generálására szolgál. Az alkalmazás célja, hogy támogassa a gráfelmélet tanítását és tanulását, valamint lehetőséget biztosítson egyedi feladatok gyors és egyszerű előállítására.
 
-## Key Features
+## Fő funkciók
 
-* **Task Generation**: Generate tasks with customizable graph parameters.
-* **Graph Creation**: Create and layout graphs using Graphology.
-* **PDF Export**: Export tasks and graphs as PDF files.
-* **Input Validation**: Validate task input data to ensure correctness.
-* **Error Handling**: Handle errors gracefully with custom middleware.
+- **Feladatgenerálás**: Testreszabható gráfparaméterekkel rendelkező feladatok generálása.
+- **Gráf létrehozása**: Gráfok generálása és elrendezése a Graphology könyvtár segítségével.
+- **PDF exportálás**: Feladatok és gráfok exportálása PDF formátumban.
+- **Bemeneti validáció**: A bemeneti adatok helyességének ellenőrzése.
+- **Hibakezelés**: Egyedi middleware segítségével történő hibakezelés.
 
-# For Developers
+## Telepítés és futtatás
 
-## Technologies Used
+1. Klónozd a repót:
 
-The project leverages a variety of technologies, including:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Telepítsd a függőségeket:
 
-- **Express.js**: A flexible Node.js web application framework for creating the server and handling HTTP requests.
-- **Graphology**: A robust and versatile library for graph theory, used for generating and manipulating graphs, as well as creating SVG images from them
-- **pdf-lib**: A powerful library for creating and modifying PDF documents in JavaScript.
-- **Sharp**: A high-performance image processing library used to convert SVG images to PNG format.
-- **TypeScript**: A statically typed superset of JavaScript that enhances code quality and maintainability.
+   ```bash
+   npm install
+   ```
+3. Hozz létre három mappát a projektmappa gyökerében a következő elnevezésekkel: generated_svg, generated_task_pdf és generated_solution_pdf. Ezek nélkül nem fog megfelelően működni az alkalmazás.
+4. Indítsd el a fejlesztői szervert:
 
-## Project Structure
+   ```bash
+   npm run dev
+   ```
+
+## Környezeti változók
+
+Hozz létre egy `.env` fájlt a gyökérkönyvtárban, és add meg a következő változót:
 
 ```
-.env
-.gitignore
-generated_pdf/
-    generated_task.pdf
-graph_svg/
-    graph.svg
-package.json
-src/
-    controllers/
-        dataController.ts
-    middleware/
-        errorHandler.ts
-    models/
-        taskModel.ts
-    routes/
-        dataFromFrontend.ts
-    server.tsx
-    services/
-        generateGraph.ts
-        generateGraphImage.ts
-        generatePDF.ts
-        taskService.ts
-    utils/
-        validationUtils.ts
-tsconfig.json
+NEXT_PUBLIC_FRONTEND=<frontend_url>
 ```
 
-## Installation
+## Használat
 
-1. Clone the repository
-2. Install dependencies (**npm install**)
-3. Create a [.env](vscode-file://vscode-app/c:/Users/Benj%C3%A1min/AppData/Local/Programs/Microsoft%20VS%20Code%20Insiders/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) file in the root directory and add any necessary environment variables.
-
-## Scripts
-
-* `npm run dev`: Start the development server using `ts-node`.
-* `npm run build`: Compile the TypeScript code to JavaScript.
-* `npm start`: Start the compiled server.
-
-## API Endpoints
-
-### Generate Task
-
-* **URL** : `/api/generate-task`
-* **Method** : `POST`
-* **Description** : Generates a task with a graph and exports it as a PDF.
-* **Request Body** :
-
+- Fejlesztői szerver indítása:
+  ```bash
+  npm run dev
   ```
-  {
-  "taskType": "string",
-  "graphNodes": "number",
-  "graphEdges": "number",
-  "taskTitle": "string",
-  "taskText": "string",
-  "dateChecked": "boolean",
-  "date": "string (optional, ISO format)"
-  }
+- Build készítése:
+  ```bash
+  npm run build
   ```
-* **Response** :
-* Success: Returns the generated PDF file.
-* Error: Returns an error message.
+- Szerver indítása:
+  ```bash
+  npm start
+  ```
 
-## Error Handling
+### SVG generálása
 
-Errors are handled by the custom error handler middleware defined in [errorHandler.ts](vscode-file://vscode-app/c:/Users/Benj%C3%A1min/AppData/Local/Programs/Microsoft%20VS%20Code%20Insiders/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html).
+- **URL**: `/api/generate-svg`
+- **Módszer**: `POST`
+- **Leírás**: SVG fájl generálása a megadott gráfparaméterek alapján.
 
-## Validation
+### PDF generálása
 
-Input validation is performed using the utility functions defined in [validationUtils.ts](vscode-file://vscode-app/c:/Users/Benj%C3%A1min/AppData/Local/Programs/Microsoft%20VS%20Code%20Insiders/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html).
+- **URL**: `/api/generate-pdf`
+- **Módszer**: `POST`
+- **Leírás**: Feladat és megoldás PDF generálása a megadott paraméterek alapján.
 
-## Graph Generation
+## Technológiák
 
-Graphs are generated using the functions defined in [generateGraph.ts](vscode-file://vscode-app/c:/Users/Benj%C3%A1min/AppData/Local/Programs/Microsoft%20VS%20Code%20Insiders/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html).
+- **Node.js** és **Express.js**: A szerver alapja.
+- **Graphology**: Gráfok generálására és kezelésére.
+- **pdf-lib**: PDF fájlok létrehozására és módosítására.
+- **Sharp**: SVG képek PNG formátumba konvertálására.
+- **TypeScript**: A kód minőségének és karbantarthatóságának javítására.
 
-## PDF Generation
+## Licenc
 
-PDF files are generated using the functions defined in [generatePDF.ts](vscode-file://vscode-app/c:/Users/Benj%C3%A1min/AppData/Local/Programs/Microsoft%20VS%20Code%20Insiders/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html).
-
-# Other
-
-## License
-
-This project is licensed under the the Apache License. See the LICENSE file for details.
-
-## Author
-
-This project is maintained by Benjámin Bartha-Tóth as part of his MA thesis work at ELTE Eötvös Loránd University (Hungary).
+Ez a projekt az Apache License licenc alatt érhető el. További részletekért lásd a [LICENSE](LICENSE) fájlt.
